@@ -46,7 +46,7 @@
             color: var(--on-surface-dark);
         }
 
-        /* Main app container */
+        /* Main app container - Uses flex to adapt to available space */
         .app-container {
             display: flex;
             width: 100%;
@@ -55,7 +55,7 @@
 
         /* --- Sidebar --- */
         .sidebar {
-            width: 280px;
+            width: 280px; /* Default desktop width */
             background-color: var(--surface-light);
             border-right: 1px solid var(--border-light);
             display: flex;
@@ -313,7 +313,7 @@
         }
         
         .mobile-menu-btn {
-            display: none; /* Hidden on desktop */
+            display: none; /* Hidden on desktop, shown on mobile via media query */
             background: none;
             border: none;
             font-size: 24px;
@@ -328,11 +328,12 @@
         .main-content-wrapper {
             flex-grow: 1; /* Allows it to take up remaining vertical space */
             display: flex;
-            flex-direction: column; /* Always column since PDF viewer is removed */
+            flex-direction: column; 
             overflow: hidden; /* Prevent content overflow */
             padding: 0 24px; /* Horizontal padding for the entire content area */
             height: 100%; /* Explicitly set height to ensure children have a height to work with */
             width: 100%; /* Ensure it takes full width of its parent */
+            box-sizing: border-box; /* Include padding in width calculation */
         }
 
         .chat-box {
@@ -354,14 +355,15 @@
             text-align: center;
             height: 100%;
             padding: 24px;
+            box-sizing: border-box; /* Include padding in width calculation */
         }
         .welcome-screen h1 {
-            font-size: 48px;
+            font-size: clamp(28px, 6vw, 48px); /* Responsive font size */
             color: var(--primary-light);
             margin: 0;
         }
         body.dark-mode .welcome-screen h1 { color: var(--primary-light); } /* Consistent blue */
-        .welcome-screen p { font-size: 18px; margin-top: 8px; color: #6c757d; }
+        .welcome-screen p { font-size: clamp(14px, 2.5vw, 18px); margin-top: 8px; color: #6c757d; } /* Responsive font size */
         .prompt-suggestions { 
             margin-top: 40px; 
             display: flex; 
@@ -381,6 +383,7 @@
             flex: 1 1 calc(50% - 12px); /* Two cards per row on wider screens, adjust for gap */
             max-width: calc(50% - 6px);
             box-sizing: border-box; /* Include padding and border in the width */
+            font-size: clamp(14px, 2vw, 16px); /* Responsive font size */
         }
         .prompt-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
         body.dark-mode .prompt-card { background-color: var(--surface-dark); border-color: var(--border-dark); }
@@ -453,23 +456,44 @@
             white-space: pre-wrap; 
             word-wrap: break-word; 
             line-height: 1.5; /* Adjusted line spacing */
+            font-size: clamp(14px, 2.2vw, 16px); /* Responsive font size */
         }
-        .message .message-content h3 { margin: 0 0 8px 0; color: var(--primary-light); }
-        body.dark-mode .message .message-content h3 { color: var(--primary-light); } /* Consistent blue */
+        /* Responsive font sizes for headings */
+        .message .message-content h1 { font-size: clamp(1.4em, 4vw, 1.8em); margin: 15px 0 10px 0; color: var(--primary-light); }
+        .message .message-content h2 { font-size: clamp(1.2em, 3.5vw, 1.5em); margin: 12px 0 8px 0; color: var(--primary-light); }
+        .message .message-content h3 { font-size: clamp(1em, 3vw, 1.2em); margin: 10px 0 6px 0; color: var(--primary-light); }
+        .message .message-content h4 { font-size: clamp(0.9em, 2.5vw, 1.1em); margin: 8px 0 5px 0; color: var(--primary-light); }
+        body.dark-mode .message .message-content h1,
+        body.dark-mode .message .message-content h2,
+        body.dark-mode .message .message-content h3,
+        body.dark-mode .message .message-content h4 {
+            color: var(--primary-light); /* Consistent blue */
+        }
 
         /* Specific styles for lists within messages */
         .message .message-content ul, 
         .message .message-content ol {
             margin: 0;
             padding-left: 20px;
-            list-style-type: disc; /* Default for ul */
+            list-style-type: none; /* Remove default bullet */
         }
         .message .message-content ol {
-            list-style-type: decimal;
+            counter-reset: item; /* Reset counter for ordered lists */
         }
-        .message .message-content li {
+        .message .message-content ul li {
             margin-bottom: 5px;
             line-height: 1.5; /* Apply line height to list items */
+            position: relative; /* For custom bullet positioning */
+            padding-left: 25px; /* Space for custom bullet */
+            text-indent: -15px; /* Pull text back for bullet */
+        }
+        .message .message-content ol li {
+            margin-bottom: 5px;
+            line-height: 1.5;
+            position: relative;
+            padding-left: 25px;
+            text-indent: -15px;
+            counter-increment: item; /* Increment counter for ordered lists */
         }
         .message .message-content ul li::before {
             content: "\f00c"; /* FontAwesome checkmark icon */
@@ -477,18 +501,18 @@
             font-weight: 900;
             margin-right: 8px;
             color: var(--user-avatar-bg); /* Consistent green for checkmarks */
+            position: absolute;
+            left: 0;
+            top: 0.15em; /* Adjust vertical alignment */
         }
-
-        /* Styles for H1-H4 within messages */
-        .message .message-content h1 { font-size: 1.8em; margin: 15px 0 10px 0; color: var(--primary-light); }
-        .message .message-content h2 { font-size: 1.5em; margin: 12px 0 8px 0; color: var(--primary-light); }
-        .message .message-content h3 { font-size: 1.2em; margin: 10px 0 6px 0; color: var(--primary-light); }
-        .message .message-content h4 { font-size: 1.1em; margin: 8px 0 5px 0; color: var(--primary-light); }
-        body.dark-mode .message .message-content h1,
-        body.dark-mode .message .message-content h2,
-        body.dark-mode .message .message-content h3,
-        body.dark-mode .message .message-content h4 {
-            color: var(--primary-light); /* Consistent blue */
+        .message .message-content ol li::before {
+            content: counter(item) ". "; /* Numbered list */
+            font-weight: 600;
+            margin-right: 8px;
+            color: var(--primary-light); /* Consistent blue for numbers */
+            position: absolute;
+            left: 0;
+            top: 0;
         }
 
         .message.bot.typing { font-style: italic; opacity: 0.8; }
@@ -506,6 +530,8 @@
             flex-direction: column; /* Allow document-context-area to stack */
             align-items: center; /* Center horizontally */
             background-color: var(--surface-light); /* Input area background */
+            width: 100%; /* Ensure it takes full width */
+            box-sizing: border-box; /* Include padding in width calculation */
         }
         body.dark-mode .chat-input-area {
             border-top: 1px solid var(--border-dark);
@@ -536,6 +562,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            width: 100%; /* Ensure content fills preview area */
         }
 
         #attachment-preview-area .preview-thumbnail {
@@ -547,6 +574,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0; /* Prevent shrinking */
         }
         body.dark-mode #attachment-preview-area .preview-thumbnail {
             background-color: #555;
@@ -563,7 +591,10 @@
         #attachment-preview-area .preview-info {
             flex-grow: 1;
             font-weight: 500;
-            font-size: 15px;
+            font-size: clamp(14px, 2vw, 15px); /* Responsive font size */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         #attachment-preview-area .remove-attachment-btn {
@@ -603,7 +634,7 @@
             border: none;
             outline: none;
             padding: 10px;
-            font-size: 16px;
+            font-size: clamp(14px, 2vw, 16px); /* Responsive font size */
             resize: none;
             background: transparent;
             color: var(--on-surface-light);
@@ -616,7 +647,7 @@
         .input-wrapper .icon-btn {
             background: none;
             border: none;
-            font-size: 20px;
+            font-size: clamp(18px, 3vw, 20px); /* Responsive font size */
             color: #6c757d;
             cursor: pointer;
             padding: 8px;
@@ -641,7 +672,7 @@
         .input-wrapper .send-btn {
             background-color: var(--primary-light);
             color: white;
-            font-size: 18px;
+            font-size: clamp(16px, 3.5vw, 18px); /* Responsive font size */
         }
         .input-wrapper .send-btn:hover {
             background-color: var(--primary-light) !important;
@@ -661,7 +692,7 @@
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 2em;
+            font-size: clamp(1.5em, 5vw, 2em); /* Responsive font size */
             border: 4px dashed white;
             border-radius: 12px;
             pointer-events: none; /* Allows clicks to pass through */
@@ -690,18 +721,20 @@
             background-color: var(--surface-light);
             padding: 24px;
             border-radius: 12px;
-            width: 90%;
+            width: 90%; /* Responsive width */
             max-width: 500px;
             position: relative;
             animation: fadeIn 0.3s;
             box-shadow: var(--shadow);
+            box-sizing: border-box; /* Include padding in width calculation */
+            font-size: clamp(14px, 2.5vw, 16px); /* Responsive font size */
         }
         body.dark-mode .modal-content {
             background-color: var(--surface-dark);
         }
         .close-button {
             position: absolute; top: 10px; right: 15px;
-            font-size: 28px;
+            font-size: clamp(22px, 4vw, 28px); /* Responsive font size */
             font-weight: bold;
             cursor: pointer;
             color: #aaa;
@@ -725,7 +758,7 @@
             color: white;
             border: none;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: clamp(14px, 2.5vw, 16px); /* Responsive font size */
             cursor: pointer;
             transition: background-color 0.3s;
         }
@@ -739,27 +772,97 @@
             background-color: #1257B7; /* Slightly darker primary dark */
         }
         
-        /* Responsive Design */
+        /* Responsive Design using Media Queries */
+        /* For screens smaller than 768px (e.g., tablets in portrait, mobile phones) */
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
-                left: -100%;
+                left: -100%; /* Hide off-screen */
                 top: 0;
                 height: 100%;
+                width: 70%; /* Occupy 70% of screen width on smaller devices */
+                max-width: 280px; /* But don't exceed original desktop width */
                 transition: left 0.3s ease-in-out;
             }
             .sidebar.open {
-                left: 0;
+                left: 0; /* Slide in when open */
             }
-            .chat-header h2 { text-align: right; flex-grow: 1; }
-            .mobile-menu-btn { display: block; }
-            .message { max-width: 95%; }
-            .copy-btn { right: 5px; } /* Mobile adjustment */
+            .chat-header {
+                padding: 12px 16px; /* Adjust padding for smaller screens */
+            }
+            .chat-header h2 { 
+                text-align: right; 
+                flex-grow: 1; 
+                font-size: clamp(16px, 3.5vw, 18px); /* Responsive font size */
+            }
+            .mobile-menu-btn { 
+                display: block; /* Show hamburger icon */
+            }
+            .main-content-wrapper {
+                padding: 0 16px; /* Adjust horizontal padding */
+            }
+            .chat-box {
+                padding: 16px; /* Adjust chat box padding */
+            }
+            .message { 
+                max-width: 95%; /* Allow messages to take more width */
+            }
+            .copy-btn { 
+                right: 5px; /* Adjust copy button position */
+            } 
             .prompt-card {
                 flex: 1 1 100%; /* One card per row on small screens */
                 max-width: 100%;
             }
+            .chat-input-area {
+                padding: 12px 16px; /* Adjust input area padding */
+            }
         }
+
+        /* For very small screens (e.g., older phones, narrow viewports) */
+        @media (max-width: 480px) {
+            .app-container {
+                flex-direction: column; /* Stack elements if needed, though sidebar handles this for now */
+            }
+            .sidebar {
+                width: 85%; /* Occupy more width on very small screens */
+            }
+            .sidebar-header h1 {
+                font-size: 20px; /* Smaller font for sidebar header */
+            }
+            .new-chat-btn {
+                font-size: 14px;
+                padding: 8px;
+            }
+            .footer-item span, .footer-item i {
+                font-size: 14px;
+            }
+            .welcome-screen h1 {
+                font-size: 24px;
+            }
+            .welcome-screen p {
+                font-size: 14px;
+            }
+            .message .message-content p {
+                font-size: 13px;
+            }
+            .message .avatar {
+                width: 30px;
+                height: 30px;
+                font-size: 12px;
+            }
+            .input-wrapper textarea {
+                font-size: 14px;
+            }
+            .input-wrapper .icon-btn {
+                font-size: 16px;
+                padding: 6px;
+            }
+            .input-wrapper .send-btn {
+                font-size: 16px;
+            }
+        }
+
 
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.95); }
@@ -854,7 +957,7 @@
             <span class="close-button" onclick="closeModal('developerModal')">&times;</span>
             <h2>Sobre el Desarrollador</h2>
             <p><strong>LexConnect</strong> fue creado con ❤️ por <strong>Óscar Sierra</strong>.</p>
-            <p>Óscar es un administrador público y estudiante de derecho en Colombia. Concibió LexConnect para ser una herramienta de IA útil, accesible e innovadora, utilizando la tecnología de aprendizaje autónomo. Ello con el fin de potenciar la solucion de problemas y la asistencia continua en cualquier tema que requiras ampliar. Estoy entrenado por Lexconnect App y google</p>
+            <p>Óscar es un administrador público y estudiante de derecho en Colombia. Concibió LexConnect para ser una herramienta de IA útil, accesible e innovadora, utilizando la tecnología de Google para potenciar el aprendizaje y la asistencia.</p>
              <div class="social-links" style="margin-top: 20px; text-align: center;">
                 <a href="https://www.instagram.com/oscar_sierra_2921/" target="_blank" aria-label="Instagram de Óscar Sierra" style="color: var(--primary-light); font-size: 2em; margin: 0 10px;">
                     <i class="fab fa-instagram"></i>
@@ -903,7 +1006,7 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
 
         // --- INITIAL CONFIGURATION AND API ---
-        const apiKey = "AIzaSyBzGvM2L1t0LC1cqQFK_mVixhCvW0Zwq3M"; // API key to be provided by Canvas runtime
+        const apiKey = ""; // API key to be provided by Canvas runtime
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
         // --- DOM SELECTORS ---
@@ -1006,7 +1109,7 @@
             }
             
             // Define keywords for custom responses (case-insensitive)
-            const creatorKeywords = ['quien te creo', 'quien te hizo', 'quien lo hizo', 'quien lo creo', 'quien lo desarrollo', 'quien te desarrollo', 'dame mas informacion sobre el creador', 'dame mas informacion sobre el desarrollador', 'quien te entrenó', 'quien te entreno', 'dame mas informacion sobre oscar sierra', 'dame mas información sobre el creador', 'quien es oscar sierra', '¿quien es oscar sierra?', 'quien te creo?', 'dame mas informacion sobre el creador'];
+            const creatorKeywords = ['quien te creo', 'quien te hizo', 'quien lo hizo', 'quien lo creo', 'quien lo desarrollo', 'quien te desarrollo'];
             const toolPurposeKeywords = ['sobre la herramienta', 'fin de la herramienta', 'objetivo de la herramienta', 'objetivo del chat', 'que es lexconnect'];
 
             let customResponse = null;
@@ -1145,7 +1248,7 @@
 
                 // Close any open list before processing a heading or new paragraph
                 if (trimmedLine.length > 0 && (trimmedLine.startsWith('#') || (!trimmedLine.startsWith('* ') && !trimmedLine.startsWith('- ') && !/^\d+\.\s/.test(trimmedLine)))) {
-                    if (inUnorderedList) { processedHtml += '<ul>'; inUnorderedList = false; }
+                    if (inUnorderedList) { processedHtml += '</ul>'; inUnorderedList = false; }
                     if (inOrderedList) { processedHtml += '</ol>'; inOrderedList = false; }
                 }
 
