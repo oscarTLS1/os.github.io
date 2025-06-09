@@ -26,6 +26,7 @@
             --shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Softer shadow */
             --font-family: 'Inter', sans-serif;
             --user-avatar-bg: #28a745; /* Green - Consistent */
+            --input-area-height: 90px; /* Approximate height of the fixed input area */
         }
 
         /* Base styles and dark/light theme */
@@ -225,6 +226,7 @@
         .sidebar-footer {
             padding-top: 16px;
             border-top: 1px solid var(--border-light);
+            /* Removed theme-switch from here */
         }
         body.dark-mode .sidebar-footer {
             border-top: 1px solid var(--border-dark);
@@ -246,11 +248,49 @@
             background-color: var(--secondary-dark);
         }
         
+        /* Theme switch and About Developer moved to header, so these styles apply to the header version */
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Space between the developer button and theme switch */
+            margin-left: auto; /* Push it to the right in the header */
+        }
+
+        .header-controls .icon-button { /* New class for the developer button in header */
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: var(--on-surface-light);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        body.dark-mode .header-controls .icon-button {
+            color: var(--on-surface-dark);
+        }
+
+        .header-controls .icon-button:hover {
+            background-color: var(--secondary-light);
+            color: var(--primary-light);
+        }
+
+        body.dark-mode .header-controls .icon-button:hover {
+            background-color: var(--secondary-dark);
+            color: var(--primary-light);
+        }
+
+
         .theme-switch {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 8px; /* Space between sun icon and slider */
         }
+
         .switch {
           position: relative;
           display: inline-block;
@@ -294,9 +334,9 @@
         .chat-header {
             padding: 16px 24px;
             border-bottom: 1px solid var(--border-light);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; /* Use flex for internal alignment */
+            align-items: center; /* Vertically align items */
+            gap: 10px; /* Space between items */
             flex-shrink: 0;
             background-color: var(--surface-light); /* Header background */
         }
@@ -310,6 +350,8 @@
             margin: 0;
             font-size: 18px;
             font-weight: 600;
+            flex-grow: 1; /* Allows title to take available space */
+            text-align: center; /* Center the title */
         }
         
         .mobile-menu-btn {
@@ -319,6 +361,7 @@
             font-size: 24px;
             cursor: pointer;
             color: var(--on-surface-light);
+            /* This button will be on the far left by default due to flex-grow on h2 */
         }
         body.dark-mode .mobile-menu-btn {
             color: var(--on-surface-dark);
@@ -334,6 +377,8 @@
             height: 100%; /* Explicitly set height to ensure children have a height to work with */
             width: 100%; /* Ensure it takes full width of its parent */
             box-sizing: border-box; /* Include padding in width calculation */
+            /* Add padding at the bottom equal to the fixed input area height + some margin */
+            padding-bottom: var(--input-area-height); /* Use CSS variable for consistency */
         }
 
         .chat-box {
@@ -459,10 +504,30 @@
             font-size: clamp(14px, 2.2vw, 16px); /* Responsive font size */
         }
         /* Responsive font sizes for headings */
-        .message .message-content h1 { font-size: clamp(1.4em, 4vw, 1.8em); margin: 15px 0 10px 0; color: var(--primary-light); }
-        .message .message-content h2 { font-size: clamp(1.2em, 3.5vw, 1.5em); margin: 12px 0 8px 0; color: var(--primary-light); }
-        .message .message-content h3 { font-size: clamp(1em, 3vw, 1.2em); margin: 10px 0 6px 0; color: var(--primary-light); }
-        .message .message-content h4 { font-size: clamp(0.9em, 2.5vw, 1.1em); margin: 8px 0 5px 0; color: var(--primary-light); }
+        .message .message-content h1 { 
+            font-size: clamp(1.4em, 4vw, 1.8em); 
+            margin: 15px 0 10px 0; 
+            color: var(--primary-light);
+            font-weight: bold; /* Ensures bold */
+        }
+        .message .message-content h2 { 
+            font-size: clamp(1.2em, 3.5vw, 1.5em); 
+            margin: 12px 0 8px 0; 
+            color: var(--primary-light);
+            font-weight: bold; /* Ensures bold */
+        }
+        .message .message-content h3 { 
+            font-size: clamp(1em, 3vw, 1.2em); 
+            margin: 10px 0 6px 0; 
+            color: var(--primary-light);
+            font-weight: bold; /* Ensures bold */
+        }
+        .message .message-content h4 { 
+            font-size: clamp(0.9em, 2.5vw, 1.1em); 
+            margin: 8px 0 5px 0; 
+            color: var(--primary-light);
+            font-weight: bold; /* Ensures bold */
+        }
         body.dark-mode .message .message-content h1,
         body.dark-mode .message .message-content h2,
         body.dark-mode .message .message-content h3,
@@ -521,17 +586,21 @@
         .message.bot.typing .dot:nth-child(3) { animation-delay: .4s; }
         @keyframes typing-blink { 0% { opacity: .2; } 20% { opacity: 1; } 100% { opacity: .2; } }
 
-        /* Input Area */
+        /* Input Area - Made fixed to bottom */
         .chat-input-area {
+            position: fixed; /* Fixed position */
+            bottom: 0; /* Align to the bottom */
+            left: 0; /* Align to the left */
+            width: 100%; /* Take full width */
             padding: 16px 24px;
             border-top: 1px solid var(--border-light);
             flex-shrink: 0;
             display: flex;
-            flex-direction: column; /* Allow document-context-area to stack */
-            align-items: center; /* Center horizontally */
-            background-color: var(--surface-light); /* Input area background */
-            width: 100%; /* Ensure it takes full width */
-            box-sizing: border-box; /* Include padding in width calculation */
+            flex-direction: column; 
+            align-items: center; 
+            background-color: var(--surface-light); 
+            box-sizing: border-box; 
+            z-index: 50; /* Ensure it's above chat content */
         }
         body.dark-mode .chat-input-area {
             border-top: 1px solid var(--border-dark);
@@ -791,15 +860,23 @@
                 padding: 12px 16px; /* Adjust padding for smaller screens */
             }
             .chat-header h2 { 
-                text-align: right; 
-                flex-grow: 1; 
-                font-size: clamp(16px, 3.5vw, 18px); /* Responsive font size */
+                /* Removed text-align: right; flex-grow: 1; on mobile for better centering with fixed elements */
+                text-align: center; /* Center the title */
+                flex-grow: 1;
             }
             .mobile-menu-btn { 
                 display: block; /* Show hamburger icon */
+                order: -1; /* Place at the beginning (left) */
+                margin-right: auto; /* Push content to the right of it */
+            }
+            .header-controls {
+                margin-left: auto; /* Push it to the right */
+                gap: 10px; /* Adjust gap for mobile */
             }
             .main-content-wrapper {
                 padding: 0 16px; /* Adjust horizontal padding */
+                /* On mobile, only need padding at the bottom of the content itself, not fixed input */
+                padding-bottom: var(--input-area-height); /* Ensure content clears the fixed input area */
             }
             .chat-box {
                 padding: 16px; /* Adjust chat box padding */
@@ -816,19 +893,23 @@
             }
             .chat-input-area {
                 padding: 12px 16px; /* Adjust input area padding */
+                position: fixed; /* Keep fixed for mobile too */
+                bottom: 0;
+                left: 0;
+                width: 100%;
             }
         }
 
         /* For very small screens (e.g., older phones, narrow viewports) */
         @media (max-width: 480px) {
             .app-container {
-                flex-direction: column; /* Stack elements if needed, though sidebar handles this for now */
+                flex-direction: column; 
             }
             .sidebar {
-                width: 85%; /* Occupy more width on very small screens */
+                width: 85%; 
             }
             .sidebar-header h1 {
-                font-size: 20px; /* Smaller font for sidebar header */
+                font-size: 20px; 
             }
             .new-chat-btn {
                 font-size: 14px;
@@ -883,20 +964,8 @@
             <div class="history-container" id="historyContainer">
                 </div>
             <div class="sidebar-footer" id="sidebarFooter">
-                <div class="footer-item" onclick="openModal('developerModal')">
-                    <i class="fa-solid fa-code"></i>
-                    <span>Sobre el desarrollador</span>
-                </div>
-                <div class="footer-item theme-switch">
-                    <div>
-                        <i class="fa-solid fa-sun"></i>
-                        <span>Tema</span>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" id="theme-toggle">
-                        <span class="slider"></span>
-                    </label>
-                </div>
+                <!-- Removed About Developer from here -->
+                <!-- Removed Theme switch from here -->
             </div>
         </aside>
 
@@ -906,6 +975,22 @@
                     <i class="fa-solid fa-bars"></i>
                 </button>
                 <h2 id="chat-title">Bienvenido</h2>
+                <!-- Theme switch and About Developer moved here -->
+                <div class="header-controls">
+                    <button class="icon-button" onclick="openModal('developerModal')" title="Sobre el desarrollador">
+                        <i class="fa-solid fa-code"></i>
+                        <span>Desarrollador</span>
+                    </button>
+                    <div class="theme-switch">
+                        <div>
+                            <i class="fa-solid fa-sun"></i>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="theme-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
             </header>
             
             <div class="main-content-wrapper">
@@ -1006,7 +1091,7 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
 
         // --- INITIAL CONFIGURATION AND API ---
-        const apiKey = ""; // API key to be provided by Canvas runtime
+        const apiKey = "AIzaSyBzGvM2L1t0LC1cqQFK_mVixhCvW0Zwq3M"; // API key provided by Canvas runtime
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
         // --- DOM SELECTORS ---
@@ -1237,8 +1322,10 @@
             let inUnorderedList = false;
             let inOrderedList = false;
 
-            // Remove markdown bold (**text**) as we are now handling other formats
-            rawText = rawText.replace(/\*\*(.*?)\*\*/g, '$1');
+            // Function to apply inline markdown (bold)
+            function applyInlineMarkdown(text) {
+                return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            }
 
             // Split text into lines to process list formatting
             const lines = rawText.split('\n');
@@ -1254,13 +1341,13 @@
 
                 // Handle headings (H1 to H4) - check from most specific to least specific
                 if (trimmedLine.startsWith('#### ')) {
-                    processedHtml += `<h4>${trimmedLine.substring(5)}</h4>`;
+                    processedHtml += `<h4>${applyInlineMarkdown(trimmedLine.substring(5))}</h4>`;
                 } else if (trimmedLine.startsWith('### ')) {
-                    processedHtml += `<h3>${trimmedLine.substring(4)}</h3>`;
+                    processedHtml += `<h3>${applyInlineMarkdown(trimmedLine.substring(4))}</h3>`;
                 } else if (trimmedLine.startsWith('## ')) {
-                    processedHtml += `<h2>${trimmedLine.substring(3)}</h2>`;
+                    processedHtml += `<h2>${applyInlineMarkdown(trimmedLine.substring(3))}</h2>`;
                 } else if (trimmedLine.startsWith('# ')) {
-                    processedHtml += `<h1>${trimmedLine.substring(2)}</h1>`;
+                    processedHtml += `<h1>${applyInlineMarkdown(trimmedLine.substring(2))}</h1>`;
                 }
                 // Handle unordered lists (bullet points) with * or -
                 else if (trimmedLine.startsWith('* ') || trimmedLine.startsWith('- ')) {
@@ -1269,7 +1356,7 @@
                         inUnorderedList = true;
                         inOrderedList = false; // Ensure ordered list is closed
                     }
-                    processedHtml += `<li>${trimmedLine.substring(2)}</li>`;
+                    processedHtml += `<li>${applyInlineMarkdown(trimmedLine.substring(2))}</li>`;
                 }
                 // Handle ordered lists (enumeration) with 1., 2., etc.
                 else if (/^\d+\.\s/.test(trimmedLine)) {
@@ -1278,11 +1365,11 @@
                         inOrderedList = true;
                         inUnorderedList = false; // Ensure unordered list is closed
                     }
-                    processedHtml += `<li>${trimmedLine.replace(/^\d+\.\s/, '')}</li>`;
+                    processedHtml += `<li>${applyInlineMarkdown(trimmedLine.replace(/^\d+\.\s/, ''))}</li>`;
                 }
                 // Handle empty lines or lines that don't match any special format, as paragraphs
                 else if (trimmedLine.length > 0) {
-                    processedHtml += `<p>${trimmedLine}</p>`;
+                    processedHtml += `<p>${applyInlineMarkdown(trimmedLine)}</p>`;
                 }
             }
 
@@ -1700,7 +1787,20 @@
                 openModal('camera-modal');
             } catch (err) {
                 console.error("Error al acceder a la cámara: ", err);
-                showAlertModal("Error de Cámara", "No se pudo acceder a la cámara. Asegúrate de dar permisos a LexConnect.");
+                // Log specific error details for debugging
+                console.error("Error name:", err.name);
+                console.error("Error message:", err.message);
+                if (err.name === 'NotAllowedError') {
+                    showAlertModal("Permiso de Cámara Denegado", "LexConnect necesita permiso para acceder a tu cámara. Por favor, concede el permiso en la configuración de tu navegador.");
+                } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                    showAlertModal("Cámara No Encontrada", "No se detectó ninguna cámara. Asegúrate de que esté conectada y funcionando.");
+                } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+                    showAlertModal("Cámara en Uso", "La cámara está siendo utilizada por otra aplicación. Cierra otras aplicaciones que usen la cámara e inténtalo de nuevo.");
+                } else if (err.name === 'OverconstrainedError') {
+                    showAlertModal("Restricciones de Cámara", "No se pudo iniciar la cámara con las restricciones especificadas. Esto puede ocurrir si tu dispositivo no soporta ciertas configuraciones de cámara.");
+                } else {
+                    showAlertModal("Error de Cámara", `No se pudo acceder a la cámara: ${err.message}. Asegúrate de dar permisos a LexConnect e inténtalo de nuevo.`);
+                }
             }
         }
 
